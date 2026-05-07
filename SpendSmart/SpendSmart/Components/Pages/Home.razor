@@ -1,0 +1,173 @@
+﻿@page "/"
+@rendermode InteractiveServer
+
+@using SpendSmart.Models
+@using SpendSmart.Services
+
+@inject BudgetManager BudgetManager
+@inject FileService FileService
+
+<h1>SpendSmart</h1>
+
+<h3>Balance: $@BudgetManager.GetBalance()</h3>
+
+<hr />
+
+<h4>Set Current Balance</h4>
+
+<input type="number"
+       placeholder="Current Balance"
+       @bind="startingBalance" />
+
+<button class="btn btn-success"
+        @onclick="UpdateBalance">
+    Set Balance
+</button>
+
+<hr />
+
+<h4>Add Transaction</h4>
+
+<input placeholder="Name"
+       @bind="description" />
+
+<br />
+
+<input placeholder="Amount"
+       type="number"
+       @bind="amount" />
+
+<br />
+
+<input placeholder="Category"
+       @bind="category" />
+
+<br />
+<br />
+
+<button class="btn btn-primary"
+        @onclick="AddTransaction">
+    Add
+</button>
+
+<hr />
+
+<hr />
+
+<input placeholder="Username"
+       @bind="username" />
+
+<button class="btn btn-success"
+        @onclick="SaveData">
+    Save Data
+</button>
+
+<br />
+<br />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>Category</th>
+            <th>Date</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var t in BudgetManager.GetTransactions())
+        {
+            <tr>
+                <td>@t.Description</td>
+
+                <td>$@t.Amount</td>
+
+                <td>@t.Category</td>
+
+                <td>
+                    @t.Date.ToString("MM/dd/yyyy")
+                </td>
+
+                <td>
+                    <button class="btn btn-danger btn-sm"
+                            @onclick="() => DeleteTransaction(t.Id)">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private string description = "";
+    private decimal amount;
+    private string category = "";
+
+    private void AddTransaction()
+    {
+        if (string.IsNullOrWhiteSpace(description) ||
+            string.IsNullOrWhiteSpace(category) ||
+            amount <= 0)
+        {
+            return;
+        }
+
+        BudgetManager.AddTransaction(new Transaction
+        {
+            Description = description,
+            Amount = amount,
+            Category = category,
+            Date = DateTime.Now,
+            Type = "Expense"
+        });
+
+        // clear inputs after adding
+        description = "";
+        amount = 0;
+        category = "";
+    }
+
+    private void DeleteTransaction(Guid id)
+    {
+        BudgetManager.DeleteTransaction(id);
+    }
+
+    private string username = "default";
+
+    protected override void OnInitialized()
+    {
+        try
+        {
+            var loaded = FileService.LoadData(username);
+
+            BudgetManager.Clear();
+
+            foreach (var t in loaded)
+            {
+                BudgetManager.AddTransaction(t);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private void SaveData()
+    {
+        FileService.SaveData(
+            username,
+            BudgetManager.GetTransactions()
+        );
+    }
+
+    private decimal startingBalance;
+
+    private void UpdateBalance()
+    {
+        BudgetManager.SetBalance(startingBalance);
+    }
+}

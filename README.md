@@ -1,43 +1,50 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/qJo95Bxr)
-# CSCI 1260 — Project
+# SpendSmart
 
-## Project Instructions
-All project requirements, grading criteria, and submission details are provided on **D2L**.  
-Refer to D2L as the *authoritative source* for this assignment.
-
-This repository is intentionally minimal. You are responsible for:
-- Creating the solution and projects
-- Designing the class structure
-- Implementing the required functionality
+## Overview
+SpendSmart is a cross-platform budget and expense tracking application built using Blazor and C#. The application allows users to manage expenses, track their current balance, save transaction history, and reload saved data using JSON files. The project was designed to satisfy the requirements of a GUI-based software engineering course project.
 
 ---
 
-## Getting Started (CLI)
+# Features
+- Add financial transactions
+- Delete transactions
+- Automatically timestamp transactions with the current date
+- Set and manage a current balance
+- Automatically subtract expenses from the balance
+- Save transaction history to JSON files
+- Load saved transaction data when reopening the application
+- Support multiple users through separate save files
+- Categorize transactions
+- Display transaction history in a table
+- Cross-platform support through Blazor
 
-You may use **Visual Studio**, **VS Code**, or the **terminal**.
+---
 
-### Create a solution
-```bash
-dotnet new sln -n ProjectName
-```
+# Technologies Used
+- C#
+- Blazor
+- .NET 9
+- Bootstrap
+- xUnit
+- System.Text.Json
 
-### Create a project (example: console app)
-```bash
-dotnet new console -n ProjectName.App
-```
+---
 
-### Add the project to the solution
-```bash
-dotnet sln add ProjectName.App
-```
+# Data Structures Used
 
-### Build and run
-```bash
-dotnet build
-dotnet run --project ProjectName.App
-```
+The application uses several data structures beyond arrays and basic lists:
 
-## Notes
-- Commit early and commit often.
-- Your repository history is part of your submission.
-- Update this README with build/run instructions specific to your project.
+## Dictionary<string, List<Transaction>>
+Used to organize transactions by category.
+
+## HashSet<string>
+Used to store unique transaction categories.
+
+## PriorityQueue<Transaction, DateTime>
+Used to manage upcoming bills and transaction ordering.
+
+---
+
+# File Storage
+
+Transaction data is stored locally as JSON files inside the `Data` folder.

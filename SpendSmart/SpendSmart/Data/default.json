@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "8600a441-cc30-4c0b-bb59-1a152fbe5894",
+    "Amount": 100,
+    "Category": "Food",
+    "Date": "2026-04-29T16:18:34.8615084-04:00",
+    "Description": "Walmart",
+    "Type": "Expense"
+  }
+]
